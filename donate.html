@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Direct Giving Portal | YourHope</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <main class="container">
+        <div class="grid-2">
+            <div>
+                <h2>Empower Change Through Philanthropy</h2>
+                <p>Select your targeted operating vector. Your transaction records will integrate directly into the structural NGO data layer for verified public transparency compliance audit.</p>
+                <br>
+                <div class="card" style="background:#e8f5e9; border:none;">
+                    <h3>Your Impact Breakdown</h3>
+                    <div id="impact-preview-msg" style="font-weight:600; color:var(--primary);">Select an investment scale below to view the estimated outcome.</div>
+                </div>
+            </div>
+            <div class="card">
+                <form id="donationProcessingForm">
+                    <div class="form-group">
+                        <label>Target Campaign Vector</label>
+                        <select id="donationCampaign" class="form-control" onchange="updateImpactText()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Giving Scale Amount ($)</label>
+                        <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                            <button type="button" class="btn" style="flex:1" onclick="setAmount(25)">$25</button>
+                            <button type="button" class="btn" style="flex:1" onclick="setAmount(100)">$100</button>
+                            <button type="button" class="btn" style="flex:1" onclick="setAmount(500)">$500</button>
+                        </div>
+                        <input type="number" id="donationAmount" class="form-control" value="100" oninput="updateImpactText()" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Donor Signature / Full Name</label>
+                        <input type="text" id="donorName" class="form-control" placeholder="Anonymous Benefactor" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" style="width:100%; padding:1rem; font-size:1.1rem;">Authorize Remittance Prototype</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer id="global-footer"></footer>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        renderGlobalHeaderFooter("");
+        
+        // Populate operational campaign variants
+        const campaigns = getCampaigns();
+        const selectEl = document.getElementById('donationCampaign');
+        campaigns.forEach(c => {
+            selectEl.innerHTML += `<option value="${c.id}">${c.title}</option>`;
+        });
+
+        function setAmount(val) {
+            document.getElementById('donationAmount').value = val;
+            updateImpactText();
+        }
+
+        function updateImpactText() {
+            const amt = document.getElementById('donationAmount').value || 0;
+            const msgEl = document.getElementById('impact-preview-msg');
+            msgEl.innerText = `A contribution of $${amt} directly secures approximately ${Math.floor(amt / 5)} standard units of on-field materials or service packages for this deployment sector.`;
+        }
+        updateImpactText();
+
+        // Autoconfigure field signatures if active session detected
+        const user = getCurrentUser();
+        if(user && user.role === 'user') {
+            document.getElementById('donorName').value = user.name;
+        }
+
+        // Processing Mock
+        document.getElementById('donationProcessingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amt = parseFloat(document.getElementById('donationAmount').value);
+            const dName = document.getElementById('donorName').value;
+            const targetCampId = selectEl.value;
+            const targetCampName = selectEl.options[selectEl.selectedIndex].text;
+
+            // 1. Append global ledger records
+            const donations = getDonations();
+            donations.push({
+                id: "D-" + Math.floor(10000 + Math.random() * 90000),
+                donor: dName,
+                amount: amt,
+                campaign: targetCampName,
+                date: new Date().toISOString().split('T')[0]
+            });
+            localStorage.setItem('yh_donations', JSON.stringify(donations));
+
+            // 2. Adjust core aggregate balance sheets
+            const stats = getStats();
+            stats.totalDonations += amt;
+            if(targetCampName.includes("Food")) stats.mealsDistributed += Math.floor(amt / 2);
+            if(targetCampName.includes("Forest")) stats.treesPlanted += Math.floor(amt / 3);
+            updateStats(stats);
+
+            // 3. Elevate underlying individual project targets
+            const camps = getCampaigns();
+            const idx = camps.findIndex(c => c.id === targetCampId);
+            if(idx !== -1) camps[idx].raised += amt;
+            localStorage.setItem('yh_campaigns', JSON.stringify(camps));
+
+            alert('Transaction successfully logged into localized LocalStorage array framework!');
+            window.location.href = user ? (user.role === 'admin' ? "admin/dashboard.html" : "user/dashboard.html") : "transparency.html";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Strategic Operations Planner | YourHope</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <h3>Admin Matrix</h3>
+            <div class="sidebar-links">
+                <a href="dashboard.html">Metrics Overview</a>
+                <a href="donations.html">Ledger Database</a>
+                <a href="volunteers.html">Field Personnel</a>
+                <a href="events.html" class="active">Strategic Schedules</a>
+                <a href="users.html">Account Audits</a>
+                <a href="contacts.html">Inbound Queries</a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <div class="card">
+                <h2>Schedule New Strategic Community Event</h2>
+                <form id="adminAddEventForm" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:1rem;">
+                    <div class="form-group" style="grid-column: span 2;"><label>Event Title Name</label><input type="text" id="eTitle" class="form-control" required></div>
+                    <div class="form-group"><label>Target Execution Date</label><input type="date" id="eDate" class="form-control" required></div>
+                    <div class="form-group"><label>Launch Time Parameters</label><input type="text" id="eTime" class="form-control" placeholder="e.g., 10:00 AM" required></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>Venue Location Base</label><input type="text" id="eLoc" class="form-control" required></div>
+                    <button type="submit" class="btn" style="grid-column: span 2;">Commit Event Entry to Public Schedule</button>
+                </form>
+            </div>
+        </main>
+    </div>
+    <footer id="global-footer"></footer>
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        enforceAccess('admin');
+        renderGlobalHeaderFooter("../");
+        
+        document.getElementById('adminAddEventForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const events = getEvents();
+            events.push({
+                id: "e" + (events.length + 1),
+                title: document.getElementById('eTitle').value,
+                date: document.getElementById('eDate').value,
+                time: document.getElementById('eTime').value,
+                location: document.getElementById('eLoc').value,
+                status: "Upcoming"
+            });
+            localStorage.setItem('yh_events', JSON.stringify(events));
+            alert('New operation successfully scheduled and linked to public informational tracks!');
+            document.getElementById('adminAddEventForm').reset();
+        });
+    </script>
+</body>
+</html>

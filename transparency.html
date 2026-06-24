@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Integrity & Metrics | YourHope</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <main class="container">
+        <h2> Allocation Framework Tracking</h2>
+        <p style="margin-bottom:2rem;">Real-time transparency validation matrix parsed via public transactional blocks.</p>
+
+        <div class="grid-4" id="transparency-stats-counters">
+            </div>
+
+        <h2 style="margin-top:3rem;">Campaign Allocation & Progress Thresholds</h2>
+        <div class="grid-2" id="transparency-campaigns-matrix">
+            </div>
+
+        <h2 style="margin-top:3rem;">Public Documents and Audit Reports</h2>
+        <div class="grid-3">
+            <div class="card" style="border-top-color:var(--secondary)">
+                <h3>FY 2025-2026 Audit</h3>
+                <p>Complete certified income-statement balance logs showing strategic operational overhead allocations.</p>
+                <a href="#" onclick="alert('Downloading simulated asset: FY25_26_Audit_Report.pdf')" class="btn style='margin-top:1rem;'" style="margin-top:1rem;">Download Report</a>
+            </div>
+            <div class="card" style="border-top-color:var(--secondary)">
+                <h3>501(c)(3) / 80G Status</h3>
+                <p>Official continuous tax-exemption validation certificates for individual corporate write-offs.</p>
+                <a href="#" onclick="alert('Downloading simulated asset: Tax_Exemption_Certificate.pdf')" class="btn" style="margin-top:1rem;">Download Document</a>
+            </div>
+        </div>
+    </main>
+    <footer id="global-footer"></footer>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        renderGlobalHeaderFooter("");
+        const stats = getStats();
+        document.getElementById('transparency-stats-counters').innerHTML = `
+            <div class="card stat-card"><h3>$${stats.totalDonations.toLocaleString()}</h3><p>Aggregated Ledger Capital</p></div>
+            <div class="card stat-card"><h3>${stats.totalUsers}</h3><p>Verified Profiles</p></div>
+            <div class="card stat-card"><h3>${stats.mealsDistributed.toLocaleString()}</h3><p>Units Nutrition Delivered</p></div>
+            <div class="card stat-card"><h3>${stats.treesPlanted.toLocaleString()}</h3><p>Afforestation Footprint</p></div>
+        `;
+
+        const campaigns = getCampaigns();
+        let campHtml = '';
+        campaigns.forEach(c => {
+            const pct = Math.min(Math.round((c.raised/c.target)*100), 100);
+            campHtml += `
+                <div class="card">
+                    <h3>${c.title}</h3>
+                    <p><strong>Deployment Objective:</strong> ${c.category}</p>
+                    <div class="progress-bar-container"><div class="progress-bar" style="width:${pct}%"></div></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+                        <span>Allocated Liquid Pool: <strong>$${c.raised.toLocaleString()}</strong></span>
+                        <span>Required Target: <strong>$${c.target.toLocaleString()}</strong></span>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('transparency-campaigns-matrix').innerHTML = campHtml;
+    </script>
+</body>
+</html>

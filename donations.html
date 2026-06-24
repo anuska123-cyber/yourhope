@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Global Allocation Auditing | YourHope</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <h3>Admin Matrix</h3>
+            <div class="sidebar-links">
+                <a href="dashboard.html">Metrics Overview</a>
+                <a href="donations.html" class="active">Ledger Database</a>
+                <a href="volunteers.html">Field Personnel</a>
+                <a href="events.html">Strategic Schedules</a>
+                <a href="users.html">Account Audits</a>
+                <a href="contacts.html">Inbound Queries</a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h2>Complete Inbound Transactions Master Ledger</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Txn Reference ID</th><th>Signature Identity Name</th><th>Capital Volume</th><th>Target Directive Allocation</th><th>Date Stamped</th></tr>
+                    </thead>
+                    <tbody id="master-donations-tbody"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <footer id="global-footer"></footer>
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        enforceAccess('admin');
+        renderGlobalHeaderFooter("../");
+        const txns = getDonations();
+        let html = '';
+        txns.forEach(t => {
+            html += `<tr><td><code>${t.id}</code></td><td>${t.donor}</td><td><strong>$${t.amount}</strong></td><td>${t.campaign}</td><td>${t.date}</td></tr>`;
+        });
+        document.getElementById('master-donations-tbody').innerHTML = html;
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us | YourHope</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <main class="container">
+        <h2>Our Story & Organizational Framework</h2>
+        <div class="grid-2">
+            <div>
+                <p>Founded with structural equity paradigms in mind, YourHope aims to build clear pathways for community advancement. Our operating modules mirror transparent national tracking standards, ensuring every unit of donation translates into real-world change.</p>
+                <h3 style="margin-top:1.5rem;">Vision</h3>
+                <p>To eliminate regional food insecurity while cultivating self-reliance models for youth and disenfranchised populations.</p>
+                <h3 style="margin-top:1.5rem;">Mission</h3>
+                <p>To implement direct intervention initiatives across primary life sectors by deploying highly optimized resource workflows.</p>
+            </div>
+            <div>
+                <img src="images/timeline.jpg" alt="Empowering our Women for a better future" style="width:100%; height:300px; object-fit:cover; border-radius:4px; margin-bottom:1rem;">
+            </div>
+        </div>
+
+        <h2 style="margin-top:3rem;">Upcoming Registered Events Queue</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr><th>Event Name</th><th>Date</th><th>Execution Time</th><th>Venue Location</th></tr>
+                </thead>
+                <tbody id="events-list-body"></tbody>
+            </table>
+        </div>
+    </main>
+    <footer id="global-footer"></footer>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        renderGlobalHeaderFooter("");
+        const events = getEvents();
+        let evRows = '';
+        events.forEach(ev => {
+            evRows += `<tr><td><strong>${ev.title}</strong></td><td>${ev.date}</td><td>${ev.time}</td><td>${ev.location}</td></tr>`;
+        });
+        document.getElementById('events-list-body').innerHTML = evRows;
+    </script>
+</body>
+</html>
