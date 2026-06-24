@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personnel Directives | YourHope</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <h3>Admin Matrix</h3>
+            <div class="sidebar-links">
+                <a href="dashboard.html">Metrics Overview</a>
+                <a href="donations.html">Ledger Database</a>
+                <a href="volunteers.html" class="active">Field Personnel</a>
+                <a href="events.html">Strategic Schedules</a>
+                <a href="users.html">Account Audits</a>
+                <a href="contacts.html">Inbound Queries</a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h2>Global Volunteer Deployment Review Terminal</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Internal ID</th><th>Full Name</th><th>Email Node</th><th>Sector Focus Aligned</th><th>Status State</th><th>Administrative Operation Action</th></tr>
+                    </thead>
+                    <tbody id="master-vols-tbody"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <footer id="global-footer"></footer>
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        enforceAccess('admin');
+        renderGlobalHeaderFooter("../");
+        
+        function renderVols() {
+            const list = getVolunteers();
+            let html = '';
+            list.forEach((v, index) => {
+                html += `
+                    <tr>
+                        <td>${v.id}</td>
+                        <td>${v.name}</td>
+                        <td>${v.email}</td>
+                        <td>${v.program}</td>
+                        <td><strong>${v.status}</strong></td>
+                        <td>
+                            <button class="btn" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="toggleVol(${index}, 'Approved')">Approve</button>
+                            <button class="btn btn-danger" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="toggleVol(${index}, 'Rejected')">Reject</button>
+                        </td>
+                    </tr>`;
+            });
+            document.getElementById('master-vols-tbody').innerHTML = html;
+        }
+
+        window.toggleVol = function(index, state) {
+            const list = getVolunteers();
+            list[index].status = state;
+            localStorage.setItem('yh_volunteers', JSON.stringify(list));
+            renderVols();
+        };
+
+        renderVols();
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Command Core | YourHope</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <h3>Admin Matrix</h3>
+            <div class="sidebar-links">
+                <a href="dashboard.html" class="active">Metrics Overview</a>
+                <a href="donations.html">Ledger Database</a>
+                <a href="volunteers.html">Field Personnel</a>
+                <a href="events.html">Strategic Schedules</a>
+                <a href="users.html">Account Audits</a>
+                <a href="contacts.html">Inbound Queries</a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h2>Administrative Management Systems Control Hub</h2>
+            <p style="margin-bottom:2rem;">Configure baseline metrics and manage user tracking matrices.</p>
+
+            <div class="grid-3" id="admin-dashboard-stats-grid">
+                </div>
+
+            <div class="card" style="margin-top:2rem;">
+                <h3>Modify Live Public Metric Parameters (NGO DARPAN Live Sync)</h3>
+                <form id="metricsModificationForm" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:1rem;">
+                    <div class="form-group"><label>Meals Distributed Counter Value</label><input type="number" id="mMeals" class="form-control"></div>
+                    <div class="form-group"><label>Trees Planted Counter Value</label><input type="number" id="mTrees" class="form-control"></div>
+                    <div style="grid-column: span 2;"><button type="submit" class="btn btn-secondary">Commit Operational Updates</button></div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <footer id="global-footer"></footer>
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        enforceAccess('admin');
+        renderGlobalHeaderFooter("../");
+
+        function drawStats() {
+            const stats = getStats();
+            const donations = getDonations();
+            const volunteers = getVolunteers();
+            const contacts = getContacts();
+
+            document.getElementById('admin-dashboard-stats-grid').innerHTML = `
+                <div class="card stat-card"><h3>$${stats.totalDonations.toLocaleString()}</h3><p>Aggregate Capital Fluidity</p></div>
+                <div class="card stat-card"><h3>${donations.length}</h3><p>Total Donation Counts</p></div>
+                <div class="card stat-card"><h3>${volunteers.length}</h3><p>Pending/Approved Volunteers</p></div>
+                <div class="card stat-card"><h3>${stats.mealsDistributed.toLocaleString()}</h3><p>Nutrition Units Served</p></div>
+                <div class="card stat-card"><h3>${stats.treesPlanted.toLocaleString()}</h3><p>Saplings Placed</p></div>
+                <div class="card stat-card"><h3>${contacts.length}</h3><p>Unresolved Contact Tickets</p></div>
+            `;
+            document.getElementById('mMeals').value = stats.mealsDistributed;
+            document.getElementById('mTrees').value = stats.treesPlanted;
+        }
+
+        document.getElementById('metricsModificationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const s = getStats();
+            s.mealsDistributed = parseInt(document.getElementById('mMeals').value);
+            s.treesPlanted = parseInt(document.getElementById('mTrees').value);
+            updateStats(s);
+            alert('Public-facing metrics updated across all transparency modules!');
+            drawStats();
+        });
+
+        drawStats();
+    </script>
+</body>
+</html>

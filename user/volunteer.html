@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Volunteer Workflows | YourHope</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <h3>User Center</h3>
+            <div class="sidebar-links">
+                <a href="dashboard.html">Overview Performance</a>
+                <a href="donations.html">My Giving Ledgers</a>
+                <a href="volunteer.html" class="active">Volunteer Declarations</a>
+                <a href="profile.html">Identity Parameters</a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h2>Active Structural Enlistment Applications</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>System ID</th><th>Applicant Signee</th><th>Aligned Focus Pillar</th><th>Status State</th></tr>
+                    </thead>
+                    <tbody id="user-vols-tbody"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <footer id="global-footer"></footer>
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        enforceAccess('user');
+        renderGlobalHeaderFooter("../");
+        const list = getVolunteers();
+        let html = '';
+        list.forEach(v => {
+            html += `<tr><td>${v.id}</td><td>${v.name}</td><td>${v.program}</td><td><span style="background:#fff7e6; color:#d46b08; padding:0.2rem 0.5rem; border-radius:4px; font-weight:bold; font-size:0.85rem;">${v.status}</span></td></tr>`;
+        });
+        document.getElementById('user-vols-tbody').innerHTML = html;
+    </script>
+</body>
+</html>

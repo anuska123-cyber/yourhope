@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard | YourHope</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header id="global-header"></header>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <h3>User Center</h3>
+            <div class="sidebar-links">
+                <a href="dashboard.html" class="active">Overview Performance</a>
+                <a href="donations.html">My Giving Ledgers</a>
+                <a href="volunteer.html">Volunteer Declarations</a>
+                <a href="profile.html">Identity Parameters</a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <h2>Welcome Back, <span id="user-display-name">Patriot</span>!</h2>
+            <p style="margin-bottom:2rem;">Your customized public metric interface and community impact framework scorecard.</p>
+
+            <div class="grid-4">
+                <div class="card stat-card">
+                    <h3 id="u-total-donations">$0</h3>
+                    <p>My Local Giving Ledger</p>
+                </div>
+                <div class="card stat-card">
+                    <h3>3</h3>
+                    <p>Internal Events Allocated</p>
+                </div>
+                <div class="card stat-card">
+                    <h3 id="u-total-vols">0</h3>
+                    <p>Volunteer Positions Logged</p>
+                </div>
+                <div class="card stat-card">
+                    <h3>88 / 100</h3>
+                    <p>Personalized Impact Score</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:2rem;">
+                <h3>Active Deployment Actions Queue</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Target Task Title</th><th>Operational Date</th><th>Location Node</th><th>Registration Desk</th></tr>
+                        </thead>
+                        <tbody id="user-events-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer id="global-footer"></footer>
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        enforceAccess('user');
+        renderGlobalHeaderFooter("../");
+        
+        const user = getCurrentUser();
+        document.getElementById('user-display-name').innerText = user.name;
+
+        // Calculate custom subset metrics
+        const donations = getDonations().filter(d => d.donor === user.name || d.donor === "Jane Smith");
+        const matchSum = donations.reduce((acc, obj) => acc + obj.amount, 0);
+        document.getElementById('u-total-donations').innerText = "$" + matchSum;
+
+        const vols = getVolunteers().filter(v => v.email === user.email || v.name === "Alice Green");
+        document.getElementById('u-total-vols').innerText = vols.length;
+
+        // Populate open context arrays
+        const evs = getEvents();
+        let evHtml = '';
+        evs.forEach(e => {
+            evHtml += `<tr><td><strong>${e.title}</strong></td><td>${e.date}</td><td>${e.location}</td><td><button class="btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="alert('Successfully attached to event roster execution profile!')">Register Spot</button></td></tr>`;
+        });
+        document.getElementById('user-events-table').innerHTML = evHtml;
+    </script>
+</body>
+</html>
